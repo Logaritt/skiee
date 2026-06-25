@@ -1,0 +1,362 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme: light;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(236, 72, 153, 0.35);
+  outline-offset: 3px;
+}
+
+.glass-card {
+  @apply rounded-[2rem] border border-white/60 bg-white/45 p-5 shadow-2xl shadow-pink-200/30 backdrop-blur-2xl dark:border-white/10 dark:bg-white/10 dark:shadow-slate-950/40;
+}
+
+.glass-card-mini {
+  @apply rounded-[1.75rem] border border-white/60 bg-white/45 p-4 shadow-xl shadow-pink-200/20 backdrop-blur-2xl dark:border-white/10 dark:bg-white/10 dark:shadow-slate-950/30;
+}
+
+.glass-button {
+  @apply rounded-2xl border border-white/55 bg-white/55 shadow-lg shadow-pink-200/20 backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-white/75 dark:border-white/10 dark:bg-white/10 dark:shadow-slate-950/40 dark:hover:bg-white/15;
+}
+
+.primary-button {
+  @apply rounded-[1.35rem] bg-gradient-to-r from-pink-400 via-fuchsia-400 to-sky-400 px-5 py-3 text-center text-sm font-black text-white shadow-xl shadow-pink-300/35 transition duration-300 hover:-translate-y-0.5 hover:shadow-2xl active:translate-y-0 dark:from-fuchsia-600 dark:via-pink-500 dark:to-sky-500 dark:shadow-fuchsia-950/40;
+}
+
+.secondary-button {
+  @apply rounded-[1.35rem] border border-white/60 bg-white/55 px-5 py-3 text-center text-sm font-black text-slate-700 shadow-lg shadow-pink-200/20 transition duration-300 hover:-translate-y-0.5 hover:bg-white/75 active:translate-y-0 dark:border-white/10 dark:bg-white/10 dark:text-white dark:shadow-slate-950/30 dark:hover:bg-white/15;
+}
+
+.danger-button {
+  @apply rounded-[1.35rem] border border-rose-200 bg-rose-100/80 px-5 py-3 text-center text-sm font-black text-rose-700 shadow-lg shadow-rose-200/30 transition duration-300 hover:-translate-y-0.5 hover:bg-rose-100 active:translate-y-0 dark:border-rose-300/20 dark:bg-rose-400/15 dark:text-rose-100 dark:shadow-slate-950/30;
+}
+
+.mission-input {
+  @apply w-full rounded-[1.35rem] border border-white/70 bg-white/65 px-4 py-3 text-sm font-bold text-slate-800 shadow-inner shadow-white/30 outline-none placeholder:text-slate-400 transition focus:border-pink-300 focus:bg-white focus:ring-4 focus:ring-pink-200/40 dark:border-white/10 dark:bg-white/10 dark:text-white dark:placeholder:text-slate-400 dark:focus:border-fuchsia-300/40 dark:focus:bg-white/15 dark:focus:ring-fuchsia-400/20;
+}
+
+.mission-card {
+  @apply rounded-[1.7rem] border border-white/60 bg-white/55 p-4 shadow-lg shadow-pink-200/20 transition-all duration-300 hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/10 dark:shadow-slate-950/30;
+}
+
+.mission-card-complete {
+  @apply border-emerald-200 bg-emerald-50/80 shadow-emerald-200/30 dark:border-emerald-300/20 dark:bg-emerald-400/15;
+  animation: cardComplete 450ms ease-out;
+}
+
+.badge-card {
+  @apply min-h-36 rounded-[1.6rem] border p-4 text-center shadow-lg transition-all duration-500;
+}
+
+.badge-card-unlocked {
+  @apply border-amber-200 bg-gradient-to-br from-amber-100/90 via-pink-100/90 to-sky-100/90 text-slate-800 shadow-amber-200/30 dark:border-amber-300/20 dark:from-amber-400/20 dark:via-fuchsia-400/15 dark:to-sky-400/20 dark:text-white;
+  animation: badgeUnlock 600ms ease-out both;
+}
+
+.badge-card-locked {
+  @apply border-white/50 bg-white/30 text-slate-400 grayscale dark:border-white/10 dark:bg-white/5 dark:text-slate-500;
+}
+
+.cloud {
+  position: absolute;
+  z-index: 0;
+  filter: drop-shadow(0 12px 18px rgba(255, 255, 255, 0.35));
+  opacity: 0.78;
+  animation: floatCloud 16s ease-in-out infinite;
+}
+
+.cloud-one {
+  top: 8%;
+  left: -1rem;
+  font-size: 4.5rem;
+}
+
+.cloud-two {
+  top: 24%;
+  right: -2.5rem;
+  font-size: 5.5rem;
+  animation-delay: -5s;
+}
+
+.cloud-three {
+  bottom: 12%;
+  left: 60%;
+  font-size: 3.5rem;
+  animation-delay: -10s;
+}
+
+.paw {
+  position: absolute;
+  z-index: 0;
+  opacity: 0.18;
+  font-size: 2.4rem;
+  animation: pawFloat 9s ease-in-out infinite;
+}
+
+.paw-one {
+  top: 15%;
+  right: 13%;
+  transform: rotate(14deg);
+}
+
+.paw-two {
+  bottom: 22%;
+  left: 8%;
+  transform: rotate(-18deg);
+  animation-delay: -3s;
+}
+
+.paw-three {
+  bottom: 38%;
+  right: 18%;
+  transform: rotate(28deg);
+  animation-delay: -6s;
+}
+
+.star-orb {
+  @apply absolute h-4 w-4 rounded-full bg-white/70 shadow-[0_0_32px_rgba(255,255,255,0.95)] dark:bg-fuchsia-200/50;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-700 {
+  animation-delay: 700ms;
+}
+
+.page-pop {
+  animation: pagePop 420ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.granted-pop {
+  animation: grantedPop 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.toast-pop {
+  animation: toastPop 250ms ease-out both;
+}
+
+.shake {
+  animation: shake 420ms ease-in-out both;
+}
+
+.loading-bar {
+  animation: loading 1.15s ease-in-out infinite;
+  transform-origin: left center;
+}
+
+.progress-fill {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.5) 45%, transparent 70%);
+  transform: translateX(-100%);
+  animation: shimmer 1.9s ease-in-out infinite;
+}
+
+.reward-glow {
+  position: relative;
+}
+
+.reward-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: 2rem;
+  background: linear-gradient(120deg, rgba(251, 191, 36, 0.45), rgba(244, 114, 182, 0.45), rgba(56, 189, 248, 0.45));
+  filter: blur(18px);
+  opacity: 0.8;
+  animation: rewardAura 4s ease-in-out infinite;
+}
+
+@keyframes floatCloud {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(18px, -16px, 0) rotate(2deg);
+  }
+}
+
+@keyframes pawFloat {
+  0%,
+  100% {
+    opacity: 0.12;
+    translate: 0 0;
+  }
+  50% {
+    opacity: 0.24;
+    translate: 0 -14px;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: scale(0.82);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.9;
+  }
+}
+
+@keyframes pagePop {
+  from {
+    transform: translateY(14px) scale(0.985);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes grantedPop {
+  0% {
+    transform: scale(0.88);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.035);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes toastPop {
+  from {
+    transform: translate(-50%, 12px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(8px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-30%) scaleX(0.3);
+  }
+  50% {
+    transform: translateX(20%) scaleX(0.72);
+  }
+  100% {
+    transform: translateX(120%) scaleX(0.35);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes badgeUnlock {
+  from {
+    transform: translateY(8px) rotate(-1deg) scale(0.96);
+    opacity: 0.1;
+  }
+  to {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cardComplete {
+  0% {
+    transform: scale(0.97);
+  }
+  65% {
+    transform: scale(1.025);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes rewardAura {
+  0%,
+  100% {
+    transform: scale(0.98);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
