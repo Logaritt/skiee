@@ -57,7 +57,7 @@ const initialState = () => {
     agentWiyonaApproval: saved?.agentWiyonaApproval ?? 'pending',
     agentWiyonaNote:
       saved?.agentWiyonaNote ??
-      'Pending final approval dari Agent Yona untuk next trip / date berdua lagi bersama Geo.',
+      'Tolong Review-nya Kaka.',
     darkMode: saved?.darkMode ?? false
   };
 };
@@ -1276,7 +1276,7 @@ function SecretLetterModal({ open, onClose, approval, note, setApproval, setNote
           value={note}
           onChange={(event) => setNote(event.target.value)}
           className="mission-input mt-2 min-h-28 resize-none text-left"
-          placeholder="Example: ACC untuk next trip / date berdua lagi bersama Geo."
+          placeholder="Tolong Review-nya Kaka."
         />
 
         <button type="button" onClick={onClose} className="secondary-button mt-4 w-full">
