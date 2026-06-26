@@ -1,3 +1,4 @@
+// export default App;
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 const STORAGE_KEY = 'operation-kidzania-2026-state';
@@ -13,6 +14,8 @@ const REWARD_ITEMS = [
   { id: 'mobil-listrik', name: 'Mobil Listrik', cost: 2002, icon: '🚗', note: 'Ultra rare reward tier.' }
 ];
 const REWARD_FALLBACK = 'Secret reward: pilih satu treat spesial setelah misi KidZania selesai. 🐾';
+const SECRET_REWARD_LETTER =
+  "Mission Control has reviewed today's mission and believes that Agent Geo and Agent Yona make a surprisingly effective team. Therefore, Mission Control officially recommends scheduling another adventure in the future. Final approval now rests in Agent Yona's hands.";
 
 const pageSequence = ['briefing', 'activities', 'tracker', 'reward'];
 
@@ -54,9 +57,17 @@ const initialState = () => {
     agentWiyonaApproval: saved?.agentWiyonaApproval ?? 'pending',
     agentWiyonaNote:
       saved?.agentWiyonaNote ??
-      'Pending Agent Wiyona decision untuk next trip atau main lagi bersama Geo.',
+      'Pending final approval dari Agent Yona untuk next trip / date berdua lagi bersama Geo.',
     darkMode: saved?.darkMode ?? false
   };
+};
+
+
+const scrollToPageTop = () => {
+  if (typeof window === 'undefined') return;
+  window.requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  });
 };
 
 function App() {
@@ -167,7 +178,10 @@ function App() {
 
   const updateState = (patch) => setState((current) => ({ ...current, ...patch }));
 
-  const goTo = (page) => updateState({ page });
+  const goTo = (page) => {
+    updateState({ page });
+    scrollToPageTop();
+  };
 
   const nextPage = () => {
     const currentIndex = pageSequence.indexOf(state.page);
@@ -248,7 +262,7 @@ function App() {
   const setAgentWiyonaApproval = (agentWiyonaApproval) => {
     updateState({ agentWiyonaApproval });
     setConfettiSignal((value) => value + 1);
-    setToast(agentWiyonaApproval === 'acc' ? 'Agent Wiyona: ACC secured!' : 'Agent Wiyona: Decline logged.');
+    setToast(agentWiyonaApproval === 'acc' ? 'Agent Wiyona: Accept secured!' : 'Agent Wiyona: Decline logged.');
   };
 
   const resetMission = () => {
@@ -262,7 +276,7 @@ function App() {
       rewardRevealed: false,
       claimedRewards: [],
       agentWiyonaApproval: 'pending',
-      agentWiyonaNote: 'Pending Agent Wiyona decision untuk next trip atau main lagi bersama Geo.',
+      agentWiyonaNote: 'Tolong Review-nya Kaka.',
       darkMode: state.darkMode
     };
     setState(fresh);
@@ -277,6 +291,7 @@ function App() {
         <LoginScreen
           onUnlock={() => {
             updateState({ accessGranted: true, page: 'briefing' });
+            scrollToPageTop();
             setConfettiSignal((value) => value + 1);
           }}
         />
@@ -303,7 +318,7 @@ function App() {
         setDarkMode={(darkMode) => updateState({ darkMode })}
       />
 
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 pb-8 pt-3 sm:max-w-xl">
+      <main className="mx-auto flex w-full max-w-[28rem] flex-1 flex-col px-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-3 sm:max-w-xl sm:px-4">
         <div className="page-pop">
           {state.page === 'briefing' && <MissionBriefing onStart={() => goTo('activities')} />}
 
@@ -372,7 +387,7 @@ function App() {
 
 function AppFrame({ children, darkMode, setDarkMode, minimal = false }) {
   return (
-    <div className="relative min-h-dvh overflow-hidden bg-gradient-to-br from-rose-100 via-sky-100 to-amber-100 text-slate-800 transition-colors duration-500 dark:from-slate-950 dark:via-fuchsia-950 dark:to-slate-900 dark:text-white">
+    <div className="relative min-h-[100svh] w-full overflow-x-hidden bg-gradient-to-br from-rose-100 via-sky-100 to-amber-100 text-slate-800 transition-colors duration-500 dark:from-slate-950 dark:via-fuchsia-950 dark:to-slate-900 dark:text-white">
       <FloatingDecorations />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.65),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(252,231,243,0.45),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(186,230,253,0.40),transparent_34%)] dark:bg-[radial-gradient(circle_at_20%_10%,rgba(168,85,247,0.24),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(236,72,153,0.18),transparent_28%),radial-gradient(circle_at_50%_100%,rgba(14,165,233,0.18),transparent_34%)]" />
       {minimal && (
@@ -385,7 +400,7 @@ function AppFrame({ children, darkMode, setDarkMode, minimal = false }) {
           {darkMode ? '☀️ Light' : '🌙 Dark'}
         </button>
       )}
-      <div className="relative z-10 flex min-h-dvh flex-col">{children}</div>
+      <div className="relative z-10 flex min-h-[100svh] w-full flex-col">{children}</div>
     </div>
   );
 }
@@ -443,7 +458,7 @@ function LoginScreen({ onUnlock }) {
   };
 
   return (
-    <main className="mx-auto grid min-h-dvh w-full max-w-md place-items-center px-4 py-8">
+    <main className="mx-auto grid min-h-[100svh] w-full max-w-[28rem] place-items-center px-3 py-8 sm:px-4">
       <form onSubmit={submit} className="glass-card page-pop w-full text-center">
         <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-[2rem] bg-gradient-to-br from-pink-200 to-sky-200 text-4xl shadow-xl dark:from-fuchsia-700 dark:to-sky-700">
           🔒
@@ -461,7 +476,7 @@ function LoginScreen({ onUnlock }) {
         </label>
         <input
           id="password"
-          type="password"
+          type="text"
           value={password}
           onChange={(event) => {
             setPassword(event.target.value);
@@ -469,7 +484,7 @@ function LoginScreen({ onUnlock }) {
           }}
           placeholder="Full name password"
           className="mission-input mt-2"
-          autoComplete="current-password"
+          autoComplete="name"
         />
 
         <button type="submit" className="primary-button mt-5 w-full">
@@ -624,7 +639,7 @@ function ActivityBuilder({ activities, addActivity, updateActivityName, deleteAc
     <section className="space-y-4">
       <div className="glass-card">
         <p className="text-xs font-black uppercase tracking-[0.28em] text-fuchsia-500 dark:text-fuchsia-200">
-          Page 3 · Add Activities
+          Add Activities
         </p>
         <h2 className="mt-2 text-3xl font-black">Build the activity map.</h2>
         <p className="mt-3 text-sm font-semibold text-slate-500 dark:text-slate-300">
@@ -667,15 +682,13 @@ function ActivityBuilder({ activities, addActivity, updateActivityName, deleteAc
         </div>
       </div>
 
-      <div className="glass-card">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-lg font-black">Editable Activity List</h3>
-          <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-black text-sky-700 dark:bg-sky-400/15 dark:text-sky-200">
-            {activities.length}/{MAX_ACTIVITIES}
-          </span>
-        </div>
-
-        <div className="mt-4 space-y-3">
+      <CollapsibleCard
+        eyebrow="Activity Registry"
+        title="Editable Activity List"
+        meta={`${activities.length}/${MAX_ACTIVITIES}`}
+        defaultOpen
+      >
+        <div className="space-y-3">
           {activities.length === 0 && (
             <div className="rounded-3xl border border-dashed border-white/70 bg-white/35 p-5 text-center text-sm font-bold text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-slate-300">
               No activities yet. Add the first mission target.
@@ -708,7 +721,7 @@ function ActivityBuilder({ activities, addActivity, updateActivityName, deleteAc
         <button type="button" onClick={onNext} className="primary-button mt-5 w-full" disabled={activities.length === 0}>
           Open Mission Tracker ✅
         </button>
-      </div>
+      </CollapsibleCard>
     </section>
   );
 }
@@ -891,20 +904,13 @@ function AchievementPanel({ achievements }) {
   const unlockedCount = achievements.filter((achievement) => achievement.unlocked).length;
 
   return (
-    <div className="glass-card">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.28em] text-fuchsia-500 dark:text-fuchsia-200">
-            Achievement System
-          </p>
-          <h2 className="mt-2 text-2xl font-black">Badges</h2>
-        </div>
-        <span className="rounded-full bg-amber-100 px-3 py-2 text-xs font-black text-amber-700 dark:bg-amber-400/15 dark:text-amber-200">
-          {unlockedCount}/{achievements.length}
-        </span>
-      </div>
-
-      <div className="mt-5 grid grid-cols-2 gap-3">
+    <CollapsibleCard
+      eyebrow="Achievement System"
+      title="Badges"
+      meta={`${unlockedCount}/${achievements.length}`}
+      defaultOpen={unlockedCount < achievements.length}
+    >
+      <div className="grid grid-cols-2 gap-3">
         {achievements.map((achievement) => (
           <div
             key={achievement.id}
@@ -916,7 +922,7 @@ function AchievementPanel({ achievements }) {
           </div>
         ))}
       </div>
-    </div>
+    </CollapsibleCard>
   );
 }
 
@@ -987,6 +993,8 @@ function RewardPage({
   onBackToTracker,
   onReset
 }) {
+  const [letterOpen, setLetterOpen] = useState(false);
+
   if (!missionReady) {
     return (
       <section className="glass-card text-center">
@@ -1006,24 +1014,24 @@ function RewardPage({
 
   const approvalCopy = {
     pending: {
-      icon: '🕵️‍♀️',
-      title: 'Awaiting Agent Wiyona Review',
-      body: 'Secret file belum diputuskan. Agent Wiyona bisa memilih ACC atau Decline.'
+      icon: '✉️',
+      title: 'Secret Letter Awaiting Review',
+      body: 'Tap the classified letter. Final approval belongs to Agent Yona.'
     },
     acc: {
       icon: '✅',
-      title: 'ACC Approved',
-      body: 'Agent Wiyona menyetujui next trip atau main lagi bersama Geo.'
+      title: 'Date Mission Approved',
+      body: 'Agent Yona has approved the recommendation for another adventure with Geo.'
     },
     decline: {
       icon: '❌',
-      title: 'Decline Logged',
-      body: 'Agent Wiyona menolak dulu. Mission file tetap tersimpan untuk evaluasi berikutnya.'
+      title: 'Decision Declined',
+      body: 'Agent Yona declined for now. Mission Control will keep the file archived.'
     }
   }[agentWiyonaApproval] ?? {
-    icon: '🕵️‍♀️',
-    title: 'Awaiting Agent Wiyona Review',
-    body: 'Secret file belum diputuskan. Agent Wiyona bisa memilih ACC atau Decline.'
+    icon: '✉️',
+    title: 'Secret Letter Awaiting Review',
+    body: 'Tap the classified letter. Final approval belongs to Agent Yona.'
   };
 
   return (
@@ -1041,24 +1049,16 @@ function RewardPage({
         </p>
       </div>
 
-      <div className="glass-card reward-glow">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.28em] text-amber-600 dark:text-amber-200">
-              Reward XP Store
-            </p>
-            <h3 className="mt-2 text-2xl font-black">Choose rewards by XP.</h3>
-            <p className="mt-2 text-sm font-semibold text-slate-500 dark:text-slate-300">
-              Check a reward to spend XP. Uncheck it if you need to return the XP.
-            </p>
-          </div>
-          <div className="rounded-[1.4rem] bg-white/65 px-4 py-3 text-right shadow-sm dark:bg-white/10">
-            <p className="text-[0.65rem] font-black uppercase tracking-[0.16em] text-slate-500 dark:text-slate-300">
-              Balance
-            </p>
-            <p className="text-3xl font-black text-sky-600 dark:text-sky-200">{rewardXpBalance}</p>
-          </div>
-        </div>
+      <CollapsibleCard
+        eyebrow="Reward XP Store"
+        title="Choose rewards by XP."
+        meta={`${rewardXpBalance} XP`}
+        defaultOpen
+        glow
+      >
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
+          Check a reward to spend XP. Uncheck it if you need to return the XP.
+        </p>
 
         <div className="mt-4 grid grid-cols-3 gap-2 text-xs font-black">
           <div className="rounded-2xl bg-white/55 px-3 py-2 dark:bg-white/10">
@@ -1118,39 +1118,150 @@ function RewardPage({
             );
           })}
         </div>
-      </div>
+      </CollapsibleCard>
 
       <div className="glass-card text-center">
         <div className="mx-auto grid h-20 w-20 place-items-center rounded-[2rem] bg-white/65 text-4xl shadow-xl dark:bg-white/10">
           {approvalCopy.icon}
         </div>
         <p className="mt-4 text-xs font-black uppercase tracking-[0.28em] text-fuchsia-500 dark:text-fuchsia-200">
-          Secret Reward · Agent Wiyona Approval
+          Secret Reward · Agent Yona Approval
         </p>
         <h3 className="mt-2 text-2xl font-black">{approvalCopy.title}</h3>
         <p className="mt-2 text-sm font-semibold text-slate-500 dark:text-slate-300">
           {approvalCopy.body}
         </p>
 
+        <button
+          type="button"
+          onClick={() => setLetterOpen(true)}
+          className="letter-button group mt-6 w-full overflow-hidden rounded-[1.8rem] border border-amber-200/80 bg-gradient-to-br from-amber-50 via-rose-50 to-sky-50 p-5 text-left shadow-xl shadow-amber-200/30 transition duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-amber-300/20 dark:from-amber-400/15 dark:via-fuchsia-400/15 dark:to-sky-400/15 dark:shadow-slate-950/30"
+          aria-haspopup="dialog"
+          aria-expanded={letterOpen}
+        >
+          <div className="flex items-center gap-4">
+            <div className="letter-float grid h-16 w-16 shrink-0 place-items-center rounded-[1.35rem] bg-white/75 text-4xl shadow-lg dark:bg-white/10">
+              💌
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[0.65rem] font-black uppercase tracking-[0.22em] text-amber-600 dark:text-amber-200">
+                Classified Letter
+              </p>
+              <h4 className="mt-1 text-lg font-black leading-tight">Tap to open the next-trip file</h4>
+              <p className="mt-1 text-xs font-bold text-slate-500 dark:text-slate-300">
+                Contains Mission Control recommendation and Agent Yona final decision.
+              </p>
+            </div>
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-white/70 text-xl shadow-sm transition group-hover:rotate-6 dark:bg-white/10">
+              →
+            </span>
+          </div>
+        </button>
+      </div>
+
+      <CollapsibleCard eyebrow="Settings" title="Mission Control" meta="Reset" defaultOpen={false}>
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-300">
+          Reset mission akan menghapus aktivitas, reward claim, approval, dan progress lokal di browser ini.
+        </p>
+        <button type="button" onClick={onReset} className="danger-button mt-4 w-full">
+          Reset Mission
+        </button>
+      </CollapsibleCard>
+
+      <SecretLetterModal
+        open={letterOpen}
+        onClose={() => setLetterOpen(false)}
+        approval={agentWiyonaApproval}
+        note={agentWiyonaNote}
+        setApproval={setAgentWiyonaApproval}
+        setNote={setAgentWiyonaNote}
+      />
+    </section>
+  );
+}
+
+function SecretLetterModal({ open, onClose, approval, note, setApproval, setNote }) {
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') onClose();
+    };
+
+    document.body.classList.add('modal-locked');
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.classList.remove('modal-locked');
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] grid place-items-center bg-slate-950/55 px-3 py-6 backdrop-blur-md"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="secret-letter-title"
+    >
+      <button
+        type="button"
+        className="absolute inset-0 cursor-default"
+        onClick={onClose}
+        aria-label="Close secret letter"
+      />
+
+      <article className="modal-pop relative z-10 max-h-[calc(100svh-2rem)] w-full max-w-[27rem] overflow-y-auto rounded-[2rem] border border-amber-200/80 bg-gradient-to-br from-amber-50 via-rose-50 to-sky-50 p-5 shadow-2xl shadow-slate-950/30 dark:border-white/10 dark:from-slate-900 dark:via-fuchsia-950 dark:to-slate-900">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-2xl bg-white/70 text-sm font-black shadow-sm transition hover:scale-105 dark:bg-white/10"
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+
+        <div className="mx-auto grid h-20 w-20 place-items-center rounded-[1.7rem] bg-white/75 text-5xl shadow-xl dark:bg-white/10">
+          💌
+        </div>
+
+        <p className="mt-5 text-center text-xs font-black uppercase tracking-[0.26em] text-amber-600 dark:text-amber-200">
+          KidZania Mission Control
+        </p>
+        <h3 id="secret-letter-title" className="mt-2 text-center text-2xl font-black leading-tight">
+          Secret Recommendation Letter
+        </h3>
+
+        <div className="mt-5 rounded-[1.6rem] border border-amber-200/70 bg-white/70 p-4 text-left shadow-inner dark:border-white/10 dark:bg-white/10">
+          <p className="text-sm font-bold leading-7 text-slate-700 dark:text-slate-100">
+            {SECRET_REWARD_LETTER}
+          </p>
+          <p className="mt-4 text-right text-sm font-black text-fuchsia-600 dark:text-fuchsia-200">
+            — Mission Control 🐾
+          </p>
+        </div>
+
         <div className="mt-5 grid grid-cols-2 gap-3">
           <button
             type="button"
-            onClick={() => setAgentWiyonaApproval('acc')}
+            onClick={() => setApproval('acc')}
             className={`rounded-[1.35rem] px-5 py-3 text-sm font-black shadow-lg transition hover:-translate-y-0.5 ${
-              agentWiyonaApproval === 'acc'
+              approval === 'acc'
                 ? 'bg-emerald-500 text-white shadow-emerald-300/40'
-                : 'bg-white/60 text-emerald-700 dark:bg-white/10 dark:text-emerald-200'
+                : 'bg-white/70 text-emerald-700 dark:bg-white/10 dark:text-emerald-200'
             }`}
           >
-            ACC ✅
+            Accept ✅
           </button>
           <button
             type="button"
-            onClick={() => setAgentWiyonaApproval('decline')}
+            onClick={() => setApproval('decline')}
             className={`rounded-[1.35rem] px-5 py-3 text-sm font-black shadow-lg transition hover:-translate-y-0.5 ${
-              agentWiyonaApproval === 'decline'
+              approval === 'decline'
                 ? 'bg-rose-500 text-white shadow-rose-300/40'
-                : 'bg-white/60 text-rose-700 dark:bg-white/10 dark:text-rose-200'
+                : 'bg-white/70 text-rose-700 dark:bg-white/10 dark:text-rose-200'
             }`}
           >
             Decline ❌
@@ -1158,27 +1269,57 @@ function RewardPage({
         </div>
 
         <label htmlFor="agent-note" className="mt-5 block text-left text-sm font-black">
-          Agent Wiyona Note
+          Agent Yona Note
         </label>
         <textarea
           id="agent-note"
-          value={agentWiyonaNote}
-          onChange={(event) => setAgentWiyonaNote(event.target.value)}
+          value={note}
+          onChange={(event) => setNote(event.target.value)}
           className="mission-input mt-2 min-h-28 resize-none text-left"
-          placeholder="Example: ACC untuk next trip / main lagi bersama Geo."
+          placeholder="Example: ACC untuk next trip / date berdua lagi bersama Geo."
         />
-      </div>
 
-      <div className="glass-card">
-        <h3 className="text-xl font-black">Settings · Mission Control</h3>
-        <p className="mt-2 text-sm font-semibold text-slate-500 dark:text-slate-300">
-          Reset mission akan menghapus aktivitas, reward claim, approval, dan progress lokal di browser ini.
-        </p>
-        <button type="button" onClick={onReset} className="danger-button mt-4 w-full">
-          Reset Mission
+        <button type="button" onClick={onClose} className="secondary-button mt-4 w-full">
+          Seal Letter
         </button>
-      </div>
-    </section>
+      </article>
+    </div>
+  );
+}
+
+function CollapsibleCard({ eyebrow, title, meta, defaultOpen = true, glow = false, children }) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <div className={`glass-card ${glow ? 'reward-glow' : ''}`}>
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className="flex w-full items-center justify-between gap-3 text-left"
+        aria-expanded={open}
+      >
+        <div className="min-w-0">
+          {eyebrow && (
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-fuchsia-500 dark:text-fuchsia-200">
+              {eyebrow}
+            </p>
+          )}
+          <h3 className="mt-1 text-xl font-black leading-tight sm:text-2xl">{title}</h3>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {meta && (
+            <span className="rounded-full bg-white/60 px-3 py-2 text-xs font-black dark:bg-white/10">
+              {meta}
+            </span>
+          )}
+          <span className={`grid h-10 w-10 place-items-center rounded-2xl bg-white/60 text-lg font-black shadow-sm transition dark:bg-white/10 ${open ? 'rotate-180' : ''}`}>
+            ⌄
+          </span>
+        </div>
+      </button>
+
+      {open && <div className="collapsible-body mt-5">{children}</div>}
+    </div>
   );
 }
 
@@ -1211,7 +1352,7 @@ function Toast({ message }) {
   if (!message) return null;
 
   return (
-    <div className="fixed bottom-5 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-[1.4rem] border border-white/60 bg-slate-950/85 px-4 py-3 text-center text-sm font-black text-white shadow-2xl backdrop-blur-xl toast-pop dark:border-white/10">
+    <div className="center-toast-pop fixed left-1/2 top-1/2 z-50 w-[min(calc(100%-2rem),24rem)] rounded-[1.4rem] border border-white/60 bg-slate-950/90 px-4 py-3 text-center text-sm font-black text-white shadow-2xl backdrop-blur-xl dark:border-white/10">
       {message}
     </div>
   );

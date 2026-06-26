@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
@@ -15,10 +16,28 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+  width: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
 body {
   min-width: 320px;
   margin: 0;
   overflow-x: hidden;
+  background: #fff1f2;
+  touch-action: manipulation;
+}
+
+body.modal-locked {
+  overflow: hidden;
 }
 
 button,
@@ -165,6 +184,23 @@ textarea:focus-visible {
   animation: toastPop 250ms ease-out both;
 }
 
+.center-toast-pop {
+  transform: translate(-50%, -50%);
+  animation: centerToastPop 260ms ease-out both;
+}
+
+.modal-pop {
+  animation: modalPop 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.letter-float {
+  animation: letterFloat 2.6s ease-in-out infinite;
+}
+
+.collapsible-body {
+  animation: collapsibleIn 220ms ease-out both;
+}
+
 .shake {
   animation: shake 420ms ease-in-out both;
 }
@@ -275,6 +311,49 @@ textarea:focus-visible {
   }
 }
 
+@keyframes centerToastPop {
+  from {
+    transform: translate(-50%, calc(-50% + 12px)) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes modalPop {
+  from {
+    transform: translateY(14px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes letterFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(2deg);
+  }
+}
+
+@keyframes collapsibleIn {
+  from {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @keyframes shake {
   0%,
   100% {
@@ -347,6 +426,35 @@ textarea:focus-visible {
   50% {
     transform: scale(1.02);
     opacity: 0.95;
+  }
+}
+
+@media (max-width: 420px) {
+  .glass-card {
+    @apply rounded-[1.65rem] p-4;
+  }
+
+  .glass-card-mini {
+    @apply rounded-[1.45rem] p-3;
+  }
+
+  .mission-card {
+    @apply rounded-[1.45rem] p-3;
+  }
+
+  .cloud-one {
+    left: -2.5rem;
+    font-size: 3.8rem;
+  }
+
+  .cloud-two {
+    right: -3.2rem;
+    font-size: 4.4rem;
+  }
+
+  .cloud-three {
+    left: 54%;
+    font-size: 3rem;
   }
 }
 
